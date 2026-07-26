@@ -1,0 +1,8 @@
+{
+  "geode": "v4.0.0",
+  "version": "1.0.0",
+  "id": "ayanmohammad.romimporter",
+  "name": "ROM Importer",
+  "developer": "Ayan",
+  "description": "Imports ROM files into Geometry Dash levels"
+}
