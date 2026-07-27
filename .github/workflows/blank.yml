@@ -13,7 +13,7 @@ jobs:
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          geode-sdk: latest
+          cli-version: latest
         id: build
 
       - name: Upload Artifact
@@ -21,3 +21,4 @@ jobs:
         with:
           name: ROMImporterMod
           path: ${{ steps.build.outputs.build-output }}
+      - name: Build 
