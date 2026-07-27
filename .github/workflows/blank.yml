@@ -10,14 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Geode CLI
-        uses: geode-sdk/action-install-geode-cli@main
-
       - name: Build Geode Mod
-        run: geode build
+        uses: geode-sdk/build-geode-mod@v2
+        id: build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ROMImporterMod
-          path: build/*.geode
+          path: ${{ steps.build.outputs.build-output }}
