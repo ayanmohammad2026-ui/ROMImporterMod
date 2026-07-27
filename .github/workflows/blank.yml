@@ -13,7 +13,7 @@ jobs:
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          cli-version: latest
+          version: latest
         id: build
 
       - name: Upload Artifact
