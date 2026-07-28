@@ -10,12 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Geode CLI
+        run: |
+          wget -q https://github.com/geode-sdk/cli/releases/latest/download/geode-cli-linux.tar.gz
+          tar -xzf geode-cli-linux.tar.gz
+          chmod +x geode
+          echo "$PWD" >> $GITHUB_PATH
+
       - name: Build Geode Mod
-        uses: geode-sdk/build-geode-mod@main
-        id: build
+        run: geode build --config release
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ROMImporterMod
-          path: ${{ steps.build.outputs.build-output }}
+          path: build/*.geode
