@@ -10,11 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Geode CLI
-        uses: geode-sdk/cli/.github/actions/setup@main
-
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
+        with:
+          cli-version: latest
         id: build
 
       - name: Upload Artifact
