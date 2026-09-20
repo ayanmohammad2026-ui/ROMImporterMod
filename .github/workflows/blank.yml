@@ -9,10 +9,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Android64, macOS]
+        include:
+          - target: Windows
+            platform: win
+          - target: Android64
+            platform: android
+          - target: macOS
+            platform: mac
+          - target: iOS
+            platform: ios
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Geode CLI
+        uses: geode-sdk/cli/.github/actions/setup@main
 
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
