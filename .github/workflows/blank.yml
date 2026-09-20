@@ -6,17 +6,18 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        config:
+        - target: Android64
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Geode CLI
-        uses: geode-sdk/cli/.github/actions/setup@main
-
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          target: Android64
+          target: ${{ matrix.config.target }}
         id: build
 
       - name: Upload Artifact
