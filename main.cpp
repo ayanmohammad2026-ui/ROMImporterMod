@@ -1,72 +1,90 @@
 #include <Geode/Geode.hpp>
-#include <Geode/ui/Popup.hpp>
-#include <fstream>
+#include <Geode/modify/EditorUI.hpp>
+#include <Geode/ui/TextInput.hpp>
 
 using namespace geode::prelude;
 
-// 1. Create a custom popup menu for your ROM Importer
-class ROMImporterPopup : public Popup<> {
+class AILevelPopup : public Popup<std::string const&> {
 protected:
-    bool setup() override {
-        this->setTitle("ROM to GD Level Importer");
+    TextInput* m_inputField;
 
-        // Create a button to trigger the import process
-        auto importButton = CCMenuItemSpriteExtra::create(
-            ButtonSprite::create("Select ROM"),
+    bool setup(std::string const& value) override {
+        this->setTitle("AI 3D Level Generator");
+        
+        // Create text input for pasting code
+        m_inputField = TextInput::create(300.f, "Paste code or 3D structure data here...");
+        m_inputField->setPosition(m_size / 2 + CCPoint{0, 20});
+        m_layers->addChild(m_inputField);
+
+        // Generate Button
+        auto genButton = CCMenuItemSpriteExtra::create(
+            ButtonSprite::create("Build 3D Level", "goldBtn.png", 0.8f),
             this,
-            menu_selector(ROMImporterPopup::onImportClicked)
+            menu_selector(AILevelPopup::onGenerate3D)
         );
-        importButton->setPosition({0, 0});
-
-        this->m_buttonMenu->addChild(importButton);#include <Geode/Geode.hpp>
-#include <Geode/utils/web.hpp> // Make sure this is at the very top of your file
-
-using namespace geode::prelude;
-
-class MyModPopup : public Popup {
-public:
-    bool init() {
-        if (!Popup::init()) return false;
-
-        // ... (all your other UI setup code for your mod goes here) ...
-
-        // Paste the link code right down here at the end of the init function:
-        auto linkLabel = CCLabelBMFont::create("GitHub Link", "goldFont.fnt");
-        linkLabel->setScale(0.5f);
-
-        auto linkButton = CCMenuItemSpriteExtra::create(
-            linkLabel,
-            this,
-            [](CCObject*) {
-                geode::utils::web::openLink("https://github.com/ayanmohammad2026-ui/ROMImporterMod");
-            }
-        );
-
+        
         auto menu = CCMenu::create();
-        menu->addChild(linkButton);
-        menu->setPosition({m_size.width / 2, 20.f});
-        this->addChild(menu);
-
-        return true; // Keep this as the very last line of the init function
-    }
-};
+        menu->addChild(genButton);
+        menu->setPosition(m_size.width / 2, 45);
+        m_layers->addChild(menu);
 
         return true;
     }
 
-    void onImportClicked(CCObject* sender) {
-        FLAlertLayer::create("Importer", "Scanning for ROM files...", "OK")->show();
+    void onGenerate3D(CCObject*) {
+        std::string code = m_inputField->getString();
         
-        // Call your file parsing and object generation function here
-        this->parseAndGenerateLevel("example_path.rom");
+        // Simulate 3D level parsing: convert code tokens into 3D objects
+        auto editorLayer = LevelEditorLayer::get();
+        if (editorLayer) {
+            float depthOffset = 0.f;
+            for (char c : code) {
+                // Example 3D translation logic: adjusting scale and Z-layer based on code input
+                auto obj = editorLayer->createObject(1, {150.f + depthOffset, 150.f});
+                if (obj) {
+                    // Simulate 3D depth by scaling and shifting Z-order / layers
+                    obj->setScale(1.0f - (depthOffset * 0.001f));
+                    obj->setZOrder(static_cast<int>(depthOffset));
+                }
+                depthOffset += 10.f;
+            }
+            FLAlertLayer::create("Success", "3D Level generated successfully from code!", "OK")->show();
+        }
+        this->onClose(nullptr);
     }
 
-    void parseAndGenerateLevel(const std::string& filepath) {
-        // Example logic: Reading binary file data using standard C++ streams
-        std::ifstream file(filepath, std::ios::binary);
-        if (!file.is_open()) {
-            log::error("Failed to open ROM file!");
-            return;
+public:
+    static AILevelPopup* create() {
+        auto ret = new AILevelPopup();
+        if (ret && ret->initAnchored(380.f, 220.f, "GJ_square01.png")) {
+            ret->autorelease();
+            return ret;
         }
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
+};
+
+class $modify(MyEditorUI, EditorUI) {
+    bool init(LevelEditorLayer* editorLayer) {
+        if (!EditorUI::init(editorLayer)) return false;
+
+        auto aiButtonSprite = CCSprite::createWithSpriteFrameName("GJ_chatBtn_001.png");
+        auto aiButton = CCMenuItemSpriteExtra::create(
+            aiButtonSprite,
+            this,
+            menu_selector(MyEditorUI::onAIBtnClick)
+        );
+
+        auto menu = CCMenu::create();
+        menu->addChild(aiButton);
+        menu->setPosition({35, 100});
+        this->addChild(menu);
+
+        return true;
+    }
+
+    void onAIBtnClick(CCObject*) {
+        AILevelPopup::create()->show();
     }
 };
