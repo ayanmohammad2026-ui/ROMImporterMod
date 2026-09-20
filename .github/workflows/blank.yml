@@ -5,15 +5,10 @@ on:
     branches: ["main", "master"]
 
 jobs:
-  build:
+_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
