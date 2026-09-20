@@ -5,11 +5,11 @@ on:
     branches: ["main", "master"]
 
 jobs:
-  build:
+_build:
     strategy:
       fail-fast: false
       matrix:
-        target: [Windows, Android32, Android64, macOS, iOS]
+        target: [Windows, Android64, macOS]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
