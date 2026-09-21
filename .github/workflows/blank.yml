@@ -3,22 +3,13 @@ name: Build Geode Mod
 on:
   push:
     branches: ["main", "master"]
-  workflow_dispatch:
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - name: Windows
-            target: win
-          - name: macOS
-            target: mac
-          - name: Android64
-            target: android64
-          - name: Android32
-            target: android32
+        target: [Windows, Android64, macOS, iOS]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,11 +17,11 @@ jobs:
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          target: ${{ matrix.config.target }}
+          target: ${{ matrix.target }}
         id: build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ROMImporterMod-${{ matrix.config.name }}
+          name: ROMImporterMod-${{ matrix.target }}
           path: ${{ steps.build.outputs.build-output }}
